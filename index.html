@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom CSS for search input behavior */
+        #searchInput {
+            width: 150px; /* Always visible on desktop */
+            opacity: 1; /* Always visible on desktop */
+            transition: width 0.3s ease, opacity 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            #searchInput {
+                width: 0; /* Hidden by default on mobile */
+                opacity: 0; /* Hidden by default on mobile */
+            }
+            .show-input #searchInput {
+                width: 150px; /* Visible when toggled on mobile */
+                opacity: 1; /* Visible when toggled on mobile */
+            }
+        }
+
+        .cloud {
+            width: 170px;
+        }
+
+        .poppins {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .sun, .moon, .thermo-max, .thermo-min {
+            width: 36px;
+        }
+
+        .sun-img, .moon-img, .thermo-max-img, .thermo-min-img {
+            width: 30px;
+        }
+
+        .username {
+            margin: -9px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <nav>
+        <div class="nav-container flex mt-5 justify-between items-center tracking-tighter">
+            <div class="nav-menu ml-5">
+                <img class="rotate-90 cursor-pointer" src="bar-chart-2.svg" alt="Menu">
+            </div>
+            <div class="nav-search flex items-center">
+                <input
+                    class="rounded-sm border-1 py-0.5 px-3 mr-2"
+                    type="text"
+                    name="search"
+                    id="searchInput"
+                    placeholder="Search for your city"
+                />
+                <button
+                    class="cursor-pointer mr-5 bg-blue-400 text-white rounded-sm border-zinc-200 border-1 px-3 py-0.5"
+                    onclick="handleSearch()"
+                >
+                    Search
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="main-container mt-5 tracking-tighter ml-5 mr-5">
+            <div class="left-container w-[330px] rounded-[1.75rem] bg-[#D9D9D9] p-2">
+                <h2 class="mt-2 poppins text-[2.25rem] font-semibold leading-normal" id="greeting">
+                    Good morning
+                </h2>
+                <p class="ml-1 username text-black poppins" id="username">Shubham</p>
+
+                <div class="weather-info flex justify-center flex-col items-center">
+                    <div class="weather-icon">
+                        <img id="weatherIcon" class="cloud bg-[url('<path-to-image>')] bg-center bg-cover bg-no-repeat mt-5" src="" alt="Weather Icon">
+                    </div>
+                    <div class="mt-10 location flex gap-2 items-center">
+                        <img src="Location.svg" alt="Location Icon">
+                        <p class="text-black poppins text-1xl font-semibold leading-none" id="location">Mumbai, India</p>
+                    </div>
+                    <h3 class="text-black text-6xl font-semibold leading-none" id="temperature">25°C</h3>
+                    <p class="poppins text-black text-2xl font-semibold leading-none" id="weatherCondition">Thunderstorm</p>
+                    <p class="text-black text-sm poppins mt-2 leading-none" id="dateTime">Monday 18 • 12:09 am</p>
+                </div>
+
+                <div class="container-below-weather mt-8">
+                    <div class="sunrise-sunset flex justify-between mx-3 mt-5">
+                        <div class="sunrise flex gap-3 items-center">
+                            <div class="sun">
+                                <img class="sun-img" src="sun.png" alt="Sun">
+                            </div>
+                            <div>
+                                <p class="text-[1rem] font-semibold text-black">Sunrise</p>
+                                <p class="font-semibold text-2xl text-black" id="sunriseTime">6:00 am</p>
+                            </div>
+                        </div>
+                        <div class="sunset flex gap-3 items-center">
+                            <div class="moon">
+                                <img class="moon-img" src="moon.png" alt="Moon">
+                            </div>
+                            <div>
+                                <p class="text-[1rem] font-semibold text-black">Sunset</p>
+                                <p class="font-semibold text-2xl text-black" id="sunsetTime">6:00 pm</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="temperature flex justify-between mx-3 mt-5 mb-3">
+                        <div class="max-temperature flex gap-3 items-center">
+                            <div class="thermo-max">
+                                <img class="thermo-max-img" src="thermo-max.png" alt="Thermometer">
+                            </div>
+                            <div>
+                                <p class="text-[1rem] font-semibold text-black">Max</p>
+                                <p class="font-semibold text-2xl text-black" id="maxTemp">30°C</p>
+                            </div>
+                        </div>
+                        <div class="min-temperature flex gap-3 items-center">
+                            <div class="thermo-min">
+                                <img class="thermo-min-img" src="thermo-min.png" alt="Thermometer">
+                            </div>
+                            <div class="mr-8">
+                                <p class="text-[1rem] font-semibold text-black">Min</p>
+                                <p class="font-semibold text-2xl text-black" id="minTemp">20°C</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const apiKey = "6453684fd96817bb165fbd7ac20c745b"; // Replace with your OpenWeatherMap API key
+
+        // Function to fetch weather data by city name
+        async function fetchWeatherByCity(city) {
+            try {
+                const response = await fetch(
+                    `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
+                );
+                const data = await response.json();
+                console.log(data); // Log the API response
+                updateWeatherUI(data);
+            } catch (error) {
+                console.error("Error fetching weather data:", error);
+                alert("City not found. Please try again.");
+            }
+        }
+
+        // Function to fetch weather data by latitude and longitude
+        async function fetchWeatherByLocation(lat, lon) {
+            try {
+                const response = await fetch(
+                    `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
+                );
+                const data = await response.json();
+                console.log(data); // Log the API response
+                updateWeatherUI(data);
+            } catch (error) {
+                console.error("Error fetching weather data:", error);
+                alert("An error occurred. Please try again later.");
+            }
+        }
+
+        // Function to update the UI with weather data
+        function updateWeatherUI(data) {
+            const cityName = data.name;
+            const country = data.sys.country;
+            const temperature = Math.round(data.main.temp);
+            const condition = data.weather[0].main;
+            const icon = data.weather[0].icon;
+
+            // Format sunrise and sunset times (hours and minutes only, lowercase am/pm)
+            const sunrise = new Date(data.sys.sunrise * 1000).toLocaleTimeString("en", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+            }).toLowerCase(); // Convert to lowercase
+
+            const sunset = new Date(data.sys.sunset * 1000).toLocaleTimeString("en", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+            }).toLowerCase(); // Convert to lowercase
+
+            // Calculate min and max temperatures
+            const minTemp = Math.round(data.main.temp_min); // Min temperature
+            const maxTemp = data.main.temp_max ? Math.round(data.main.temp_max) : minTemp + 6; // Max temperature (fallback: minTemp + 6)
+
+            // Format current date and time (hours and minutes only, lowercase am/pm)
+            const dateTime = new Date().toLocaleString("en", {
+                weekday: "long",
+                day: "numeric",
+                month: "short",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true,
+            }).toLowerCase(); // Convert to lowercase
+
+            // Update the DOM
+            document.getElementById("location").textContent = `${cityName}, ${country}`;
+            document.getElementById("temperature").textContent = `${temperature}°C`;
+            document.getElementById("weatherCondition").textContent = condition;
+            document.getElementById("weatherIcon").src = `http://openweathermap.org/img/wn/${icon}@2x.png`;
+            document.getElementById("sunriseTime").textContent = sunrise;
+            document.getElementById("sunsetTime").textContent = sunset;
+            document.getElementById("maxTemp").textContent = `${maxTemp}°C`; // Update max temperature
+            document.getElementById("minTemp").textContent = `${minTemp}°C`; // Update min temperature
+            document.getElementById("dateTime").textContent = dateTime;
+        }
+
+        // Function to auto-detect user location
+        function detectLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        fetchWeatherByLocation(latitude, longitude);
+                    },
+                    (error) => {
+                        console.error("Error detecting location:", error);
+                        alert("Location access denied. Please enable location services.");
+                    }
+                );
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        // Function to handle search
+        function handleSearch() {
+            const city = document.getElementById("searchInput").value.trim();
+            if (city) {
+                fetchWeatherByCity(city);
+            }
+        }
+
+        // Auto-detect location on page load
+        detectLocation();
+    </script>
+</body>
+</html>
