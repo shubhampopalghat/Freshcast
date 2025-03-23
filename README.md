@@ -14,7 +14,7 @@ FreshCast is a sleek and intuitive web application that provides real-time **wea
 ---
 
 ## ⚙️ **Tech Stack**
-- **Frontend:** HTML, CSS, JavaScript, React.js  
+- **Frontend:** HTML, CSS, JavaScript 
 - **API:** OpenWeatherMap API (for weather data) and AQICN API (for AQI data)  
 - **Version Control:** Git, GitHub  
 
