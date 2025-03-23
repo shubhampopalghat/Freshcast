@@ -23,9 +23,9 @@ function initAutocomplete() {
 
 const apiKey = "6453684fd96817bb165fbd7ac20c745b"; // Replace with your OpenWeatherMap API key
 
-function toggleMenu() {
-    document.getElementById("menu").classList.toggle("show");
-}
+// function toggleMenu() {
+//     document.getElementById("menu").classList.toggle("show");
+// }
 
 function toggleSearch() {
     let container = document.querySelector(".search-container");
@@ -56,7 +56,6 @@ function fetchWeatherByCity(city) {
             updateWeatherUI(data);
             updateSunData(data); 
             fetchForecast(data.coord.lat, data.coord.lon); // Fetch forecast after current weather
-            updateHighLowTemp(data); 
         })
         .catch(error => {
             console.error("Error fetching weather data:", error);
@@ -80,7 +79,7 @@ function fetchForecast(lat, lon) {
     fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`)
         .then(response => response.json())
         .then(data => {
-            updateForecastUI(data.list);
+            // updateForecastUI(data.list);
         })
         .catch(error => {
             console.error("Error fetching forecast data:", error);
@@ -156,20 +155,17 @@ function detectLocation() {
 }
 
 
-window.addEventListener("DOMContentLoaded", () => {
-    updateHighLowTemp(data);
-});
 
 
 window.onload = () => {
-    initAutocomplete();
+    // initAutocomplete();
     detectLocation();
+    updateDateTime();
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             position => {
                 const { latitude, longitude } = position.coords;
                 fetchWeatherByLocation(latitude, longitude);
-                fetchAQI(latitude, longitude);
             },
             () => {
                 console.error("Location access denied");
@@ -179,6 +175,9 @@ window.onload = () => {
     } else {
         console.error("Geolocation not supported");
     }
+
+   
+    
 };
 
 
@@ -200,7 +199,7 @@ function updateDateTime() {
     document.getElementById("full-date").textContent = `${date} ${month}, ${year}`;
 }
 
-updateDateTime();
+
 
 function updateSunData(data) {
     const sunriseTimestamp = data.sys.sunrise * 1000;  // Convert to milliseconds
@@ -242,6 +241,8 @@ function updateHighLowTemp(data) {
         const forecast = data.list[0].main;  // Get the first forecast entry
         highTemp.textContent = `High: ${Math.round(forecast.temp_max)} °C`;
         lowTemp.textContent = `Low: ${Math.round(forecast.temp_min)} °C`;
+
+        console.log(forecast.temp_max);  // Fixed variable name
     } else {
         console.error("Forecast data not found in API response.");
     }
@@ -249,6 +250,7 @@ function updateHighLowTemp(data) {
 
 
 //auto complete 
+
 
 
 

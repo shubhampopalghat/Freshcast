@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="script.js"> </script>
-    <script src="https://maps.gomaps.pro/maps/api/js?key=AlzaSyYWcH7Tnp9Dkd--kooUzyz5sQ_y_N_yTAk&libraries=places"></script>
+    <!-- <script src="https://maps.gomaps.pro/maps/api/js?key=AlzaSyYWcH7Tnp9Dkd--kooUzyz5sQ_y_N_yTAk&libraries=places"></script> -->
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -150,9 +150,9 @@
                             <h1 class="temp text-5xl "> <span id="temp">--</span>°C </h1>
                             <div class="flex gap-2">
                                 <div class="flex gap-2">
-                                    <p id="high-Temp">High: -- °C</p>
+                                    <p id="high-temp">High: -- °C</p>
                                     <p>|</p>
-                                    <p id="low-Temp">Low: -- °C</p>
+                                    <p id="low-temp">Low: -- °C</p>
                                 </div>
 
 
@@ -218,20 +218,20 @@
         <section class=" right-section ml-5">
 
 
-            <div class="flex justify-end mt-5">
-                <div class="relative w-96">
+            <div class="flex mt-5">
+                <!-- <div class="relative w-96">
                     <input type="text"
                         class="city-search w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="Enter city..." autocomplete="off">
                     <div id="autocomplete-results"
                         class="absolute top-full left-0 w-full bg-white border rounded-lg shadow-md mt-1 z-50 hidden">
                     </div>
-                </div>
-                <!-- <div class="search-container w-130 bg-secondary flex gap-3 py-3 rounded-3xl px-5">
-                    <img class="w-5 cursor-pointer" onclick="toggleSearch()" src="assets/img/Search-icon.svg">
-                    <input id="searchInput" class="outline-none bg-transparent main-text" type="text" placeholder="Enter the city ..." name="city" oninput="getSuggestions()">
-                    <ul id="suggestions" class="absolute bg-white shadow-lg w-130 rounded-md hidden z-10"></ul> -->
-            </div>
+                </div> -->
+                <div class="text-2xl  flex gap-3 px-3 py-2">
+                    <div> Air Quality Index </div>
+                    <!-- <img class="w-5 cursor-pointer"  src="assets/img/Search-icon.svg"> -->
+                    <!-- <input  class="outline-none bg-transparent main-text" type="text" placeholder="Enter the city ..." name="city" oninput="getSuggestions()"> -->
+                     </div>
             </div>
             <div class="AQI mt-5 bg-[radial-gradient(circle,_#162850,_#121A2D)] rounded-3xl p-5 h-[44vh] w-[43vw]">
                 <div id="speedometer">
