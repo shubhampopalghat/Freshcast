@@ -1,3 +1,26 @@
+
+let autocomplete;
+
+function initAutocomplete() {
+    const input = document.querySelector('.city-search');
+
+    autocomplete = new google.maps.places.Autocomplete(input, {
+        types: ['(cities)']
+    });
+
+    autocomplete.addListener('place_changed', () => {
+        const place = autocomplete.getPlace();
+        if (place.geometry) {
+            input.value = place.formatted_address || place.name;
+        }
+    });
+}
+
+
+
+
+
+
 const apiKey = "6453684fd96817bb165fbd7ac20c745b"; // Replace with your OpenWeatherMap API key
 
 function toggleMenu() {
@@ -139,6 +162,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
 
 window.onload = () => {
+    initAutocomplete();
+    detectLocation();
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             position => {
@@ -210,22 +235,25 @@ function updateSunData(data) {
 // High and low temprature
 
 function updateHighLowTemp(data) {
-    const highTempEl = document.getElementById("high-temp");
-    const lowTempEl = document.getElementById("low-temp");
+    const highTemp = document.getElementById("high-temp");
+    const lowTemp = document.getElementById("low-temp");
 
-    if (data.main.temp_max && data.main.temp_min) {
-        highTempEl.textContent = `High: ${Math.round(data.main.temp_max)} °C`;
-        lowTempEl.textContent = `Low: ${Math.round(data.main.temp_min)} °C`;
+    if (data.list && data.list.length > 0) {
+        const forecast = data.list[0].main;  // Get the first forecast entry
+        highTemp.textContent = `High: ${Math.round(forecast.temp_max)} °C`;
+        lowTemp.textContent = `Low: ${Math.round(forecast.temp_min)} °C`;
     } else {
-        console.error("Max/Min temperature not found in API response.");
+        console.error("Forecast data not found in API response.");
     }
 }
 
+
+//auto complete 
 
 
 
 
 // Detect location on page load
-detectLocation();
+// detectLocation();
 
 
