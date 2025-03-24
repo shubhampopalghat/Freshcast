@@ -22,45 +22,46 @@ function initAutocomplete() {
 
 
 const apiKey = "6453684fd96817bb165fbd7ac20c745b"; // Replace with your OpenWeatherMap API key
+let currentWeatherData = null;  // Store current weather data
+let isCelsius = true;  // Track current temperature unit
 
-// function toggleMenu() {
-//     document.getElementById("menu").classList.toggle("show");
-// }
 
-function toggleSearch() {
-    let container = document.querySelector(".search-container");
-    let input = document.getElementById("searchInput");
-    if (container.classList.contains("show-input")) {
-        if (input.value.trim()) {
-            fetchWeatherByCity(input.value.trim());
+
+function toggleSearch() { 
+     let input = document.getElementById("searchInput");
+        const city = input.value.trim();
+        if (city) {
+            fetchWeatherByCity(city);  // Fetch weather immediately when clicking the icon
         }
-        input.value = "";
-        container.classList.remove("show-input");
-    } else {
-        container.classList.add("show-input");
-        input.focus();
-    }
-}
+    } 
+
 
 function handleSearch(event) {
     if (event.key === "Enter") {
-        toggleSearch();
+        let city = document.getElementById("searchInput").value.trim();
+        if (city) {
+            fetchWeatherByCity(city);  // Fetch weather immediately on Enter
+        }
     }
 }
+
 
 function fetchWeatherByCity(city) {
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`)
         .then(response => response.json())
         .then(data => {
-            console.log(data);
             updateWeatherUI(data);
             updateSunData(data); 
+            currentWeatherData = data;
             fetchForecast(data.coord.lat, data.coord.lon); // Fetch forecast after current weather
+       
         })
         .catch(error => {
             console.error("Error fetching weather data:", error);
         });
 }
+
+
 
 function fetchWeatherByLocation(lat, lon) {
     fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`)
@@ -79,7 +80,7 @@ function fetchForecast(lat, lon) {
     fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`)
         .then(response => response.json())
         .then(data => {
-            // updateForecastUI(data.list);
+            updateHighLowTemp(data);
         })
         .catch(error => {
             console.error("Error fetching forecast data:", error);
@@ -234,22 +235,59 @@ function updateSunData(data) {
 // High and low temprature
 
 function updateHighLowTemp(data) {
-    const highTemp = document.getElementById("high-temp");
-    const lowTemp = document.getElementById("low-temp");
+    const highTempEl = document.getElementById("high-temp");
+    const lowTempEl = document.getElementById("low-temp");
 
-    if (data.list && data.list.length > 0) {
-        const forecast = data.list[0].main;  // Get the first forecast entry
-        highTemp.textContent = `High: ${Math.round(forecast.temp_max)} °C`;
-        lowTemp.textContent = `Low: ${Math.round(forecast.temp_min)} °C`;
+    let highTemp = -Infinity;
+    let lowTemp = Infinity;
 
-        console.log(forecast.temp_max);  // Fixed variable name
-    } else {
-        console.error("Forecast data not found in API response.");
-    }
+    // Loop through forecast data to find min and max temps
+    data.list.forEach(item => {
+        highTemp = Math.max(highTemp, item.main.temp_max);
+        lowTemp = Math.min(lowTemp, item.main.temp_min);
+    });
+
+    // Display the high and low temperatures
+    highTempEl.textContent = `High: ${Math.round(highTemp)} °C`;
+    lowTempEl.textContent = `Low: ${Math.round(lowTemp)} °C`;
 }
 
 
-//auto complete 
+
+// Toggle Temprature
+function toggleUnits() {
+    if (!currentWeatherData) return;
+
+    const toggle = document.getElementById("unitToggle");
+    const tempEl = document.getElementById("temp");
+    const highTempEl = document.getElementById("high-temp");
+    const lowTempEl = document.getElementById("low-temp");
+
+    isCelsius = !isCelsius; // Toggle the unit
+
+    const tempC = currentWeatherData.main.temp;
+    const highC = currentWeatherData.main.temp_max;
+    const lowC = currentWeatherData.main.temp_min;
+
+    const tempF = (tempC * 9/5) + 32;
+    const highF = (highC * 9/5) + 32;
+    const lowF = (lowC * 9/5) + 32;
+
+    // Update temperatures and units
+    tempEl.textContent = isCelsius 
+        ? `${Math.round(tempC)}` 
+        : `${Math.round(tempF)}`;
+    
+    highTempEl.textContent = isCelsius 
+        ? `High: ${Math.round(highC)} °C` 
+        : `High: ${Math.round(highF)} °F`;
+    
+    lowTempEl.textContent = isCelsius 
+        ? `Low: ${Math.round(lowC)} °C` 
+        : `Low: ${Math.round(lowF)} °F`;
+}
+
+
 
 
 
