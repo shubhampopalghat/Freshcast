@@ -48,19 +48,19 @@ const Sidebar: React.FC = () => {
       <>
         <div className="flex items-center justify-between w-full">
 
-          <div className="flex items-center justify-center flex-col gap-2 mt-7">
-           <img src="/logo.png"> </img>
+          <div className="flex items-center justify-center flex-col gap-2 mt-7 ml-2">
+           <img src="/logo.png"/>
             <h2 className="text-xs tracking-tighter">Freshcast</h2>
           </div>
 
 
 
-          <Sheet open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
+          <Sheet open={isSettingsOpen} onOpenChange={setIsSettingsOpen} >
             <SheetTrigger asChild>
               <a className="cursor-pointer group">
                 <Menu
                   size={26}
-                  className="text-text-secondary group-hover:text-brand transition-colors mt-2"
+                  className="text-text-secondary group-hover:text-brand transition-colors mt-2 mr-2"
                 />
               </a>
             </SheetTrigger>

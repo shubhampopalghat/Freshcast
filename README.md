@@ -1,73 +1,30 @@
-# Welcome to your Lovable project
+🌦️ **FreshCast - Weather & Air Quality App**  
+FreshCast is a sleek and intuitive web application that provides real-time weather conditions and air quality index (AQI) data. Designed with a clean and user-friendly interface, it offers accurate and reliable information for locations around the globe.
 
-## Project info
+🎨 **UI Inspiration**  
+The design of FreshCast is inspired by modern weather dashboards for a fresh, minimal look.  
+Check out the design reference here: [Figma UI Inspiration](https://www.figma.com/design/yvRhW7JxZNDZleQ9G5DG3O/Weather-Dashboard--Community-?node-id=0-1&p=f&t=XepaWhY4pzHdztKe-0)
 
-**URL**: https://lovable.dev/projects/8228d4e5-bdfc-4eec-9a34-13aa4d385cbe
+🚀 **Features**  
+✅ Real-time weather updates (temperature, humidity, wind speed)  
+✅ Accurate AQI data (air quality levels)  
+✅ Search functionality to get weather and AQI details for any location  
+✅ Responsive design for seamless experience on all devices  
+✅ Clean and modern UI  
 
-## How can I edit this code?
+⚙️ **Tech Stack**  
+**Frontend:** React + Tailwind  
+**API:** OpenWeatherMap API (for weather data) and AQICN API (for AQI data)  
+**Version Control:** Git, GitHub  
 
-There are several ways of editing your application.
+🌐 **Installation**  
+Clone the repository  
+git clone https://github.com/shubhampopalghat/Freshcast.git
 
-**Use Lovable**
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/8228d4e5-bdfc-4eec-9a34-13aa4d385cbe) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/8228d4e5-bdfc-4eec-9a34-13aa4d385cbe) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes it is!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+▶️ **Deployment (Vercel)**  
+1. Go to [https://vercel.com](https://vercel.com) and sign in with your GitHub account.  
+2. Click on **“New Project”** and import your **FreshCast** repository.  
+3. Follow the setup instructions — Vercel automatically detects the framework (React).  
+4. Set up any environment variables required (e.g., API keys for weather and AQI).  
+5. Click **“Deploy”** and your app will be live in seconds!
