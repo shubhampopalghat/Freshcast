@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useWeather } from "@/context/WeatherContext";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -72,28 +71,37 @@ const Sidebar: React.FC = () => {
                 <div className="flex flex-col items-center gap-10">
 
                   <div className="flex flex-col gap-10 items-center">
-                    <a className="cursor-pointer group">
+                    <a className="cursor-pointer group" onClick={() => setIsSettingsOpen(false)}>
                       <Home
                         size={24}
                         className="text-text-secondary group-hover:text-brand transition-colors"
                       />
                     </a>
 
-                    <a className="cursor-pointer group" onClick={openAnalyticsView}>
+                    <a className="cursor-pointer group" onClick={() => {
+                      openAnalyticsView();
+                      setIsSettingsOpen(false);
+                    }}>
                       <PieChart
                         size={24}
                         className="text-text-secondary group-hover:text-brand transition-colors"
                       />
                     </a>
 
-                    <a className="cursor-pointer group" onClick={openMapView}>
+                    <a className="cursor-pointer group" onClick={() => {
+                      openMapView();
+                      setIsSettingsOpen(false);
+                    }}>
                       <MapPin
                         size={24}
                         className="text-text-secondary group-hover:text-brand transition-colors"
                       />
                     </a>
 
-                    <a className="cursor-pointer group" onClick={openForecastView}>
+                    <a className="cursor-pointer group" onClick={() => {
+                      openForecastView();
+                      setIsSettingsOpen(false);
+                    }}>
                       <Calendar
                         size={24}
                         className="text-text-secondary group-hover:text-brand transition-colors"
@@ -103,7 +111,7 @@ const Sidebar: React.FC = () => {
                 </div>
 
                 <div className="flex flex-col gap-8 items-center mb-5">
-                  <a className="cursor-pointer">
+                  <a className="cursor-pointer" onClick={() => setIsSettingsOpen(false)}>
                     <LogOut size={24} className="text-text-secondary hover:text-brand transition-colors" />
                   </a>
 
@@ -112,7 +120,10 @@ const Sidebar: React.FC = () => {
                       <Moon className="text-text-secondary h-4 w-4" />
                       <Switch
                         checked={isDarkMode}
-                        onCheckedChange={handleThemeToggle}
+                        onCheckedChange={() => {
+                          handleThemeToggle();
+                          setIsSettingsOpen(false);
+                        }}
                         className="data-[state=checked]:bg-brand"
                       />
                       <Sun className="text-text-secondary h-4 w-4" />

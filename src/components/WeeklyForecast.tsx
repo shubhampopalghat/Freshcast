@@ -27,19 +27,25 @@ const WeeklyForecast: React.FC = () => {
   // Process forecast data to get daily forecasts
   const dailyForecasts: Record<string, any> = {};
   forecastData.list.forEach(item => {
-    const date = new Date(item.dt * 1000).toLocaleDateString();
+    const date = new Date(item.dt * 1000);
+    const dateString = date.toLocaleDateString('en-US', {
+      timeZone: 'UTC',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
     
-    if (!dailyForecasts[date]) {
-      dailyForecasts[date] = {
-        date,
+    if (!dailyForecasts[dateString]) {
+      dailyForecasts[dateString] = {
+        date: dateString,
         icon: item.weather[0].icon,
         description: item.weather[0].description,
         temp_max: item.main.temp_max,
         temp_min: item.main.temp_min
       };
     } else {
-      dailyForecasts[date].temp_max = Math.max(dailyForecasts[date].temp_max, item.main.temp_max);
-      dailyForecasts[date].temp_min = Math.min(dailyForecasts[date].temp_min, item.main.temp_min);
+      dailyForecasts[dateString].temp_max = Math.max(dailyForecasts[dateString].temp_max, item.main.temp_max);
+      dailyForecasts[dateString].temp_min = Math.min(dailyForecasts[dateString].temp_min, item.main.temp_min);
     }
   });
 
@@ -87,7 +93,10 @@ const WeeklyForecast: React.FC = () => {
               className="min-w-[120px] bg-tertiary p-3 rounded-xl flex flex-col items-center"
             >
               <p className="text-sm">
-                {new Date(forecast.date).toLocaleDateString("en-US", { weekday: "short" })}
+                {new Date(forecast.date).toLocaleDateString("en-US", { 
+                  weekday: "short",
+                  timeZone: 'UTC'
+                })}
               </p>
               <img
                 src={`http://openweathermap.org/img/wn/${forecast.icon}.png`}

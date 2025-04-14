@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { toast } from "@/components/ui/use-toast";
-import { 
-  fetchWeatherByLocation, 
-  fetchWeatherByCity, 
-  fetchForecast, 
-  fetchAirQuality, 
+import {
+  fetchWeatherByLocation,
+  fetchWeatherByCity,
+  fetchForecast,
+  fetchAirQuality,
   fetchNearbyCities,
   WeatherData,
   ForecastData,
@@ -87,7 +87,7 @@ export const WeatherProvider: React.FC<WeatherProviderProps> = ({ children }) =>
         (error) => {
           console.error("Geolocation error:", error);
           let errorMessage = "Failed to get your location. Please search for a city.";
-          
+
           switch (error.code) {
             case error.PERMISSION_DENIED:
               errorMessage = "Location access was denied. Please enable location service , use in desktop or try searching manually.";
@@ -99,7 +99,7 @@ export const WeatherProvider: React.FC<WeatherProviderProps> = ({ children }) =>
               errorMessage = "Location request timed out. Please try again.";
               break;
           }
-          
+
           setError(errorMessage);
           toast({
             title: "Location Error",
@@ -114,7 +114,7 @@ export const WeatherProvider: React.FC<WeatherProviderProps> = ({ children }) =>
 
     // Check if we're on a mobile device
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
+
     if (isMobile) {
       // On mobile, we'll try to get location immediately
       getLocation();
@@ -123,7 +123,7 @@ export const WeatherProvider: React.FC<WeatherProviderProps> = ({ children }) =>
       const timeoutId = setTimeout(() => {
         getLocation();
       }, 1000);
-      
+
       return () => clearTimeout(timeoutId);
     }
   }, []);
@@ -131,7 +131,7 @@ export const WeatherProvider: React.FC<WeatherProviderProps> = ({ children }) =>
   const fetchAllWeatherData = async (lat: number, lon: number) => {
     setLoading(true);
     setError(null);
-    
+
     try {
       const [weather, forecast, airQuality, nearby] = await Promise.all([
         fetchWeatherByLocation(lat, lon),
@@ -139,7 +139,7 @@ export const WeatherProvider: React.FC<WeatherProviderProps> = ({ children }) =>
         fetchAirQuality(lat, lon),
         fetchNearbyCities(lat, lon)
       ]);
-      
+
       setWeatherData(weather);
       setForecastData(forecast);
       setAirQualityData(airQuality);
@@ -159,14 +159,14 @@ export const WeatherProvider: React.FC<WeatherProviderProps> = ({ children }) =>
 
   const searchCity = async (city: string) => {
     if (!city.trim()) return;
-    
+
     setLoading(true);
     setError(null);
-    
+
     try {
       const weatherData = await fetchWeatherByCity(city);
       const { lat, lon } = weatherData.coord;
-      
+
       await fetchAllWeatherData(lat, lon);
     } catch (error) {
       console.error("Error searching city:", error);
@@ -205,7 +205,7 @@ export const WeatherProvider: React.FC<WeatherProviderProps> = ({ children }) =>
         <div class="bg-card-bg rounded-xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
           <div class="flex justify-between items-center p-4 border-b border-tertiary">
             <h2 class="text-xl font-semibold">Location: ${weatherData.name}, ${weatherData.sys.country}</h2>
-            <button class="close-modal text-2xl text-text-secondary hover:text-white">&times;</button>
+            <button class="close-modal text-3xl text-text-secondary hover:text-white">&times;</button>
           </div>
           <div class="p-4">
             <div class="aspect-video w-full rounded-lg overflow-hidden">
@@ -214,7 +214,7 @@ export const WeatherProvider: React.FC<WeatherProviderProps> = ({ children }) =>
                 height="100%" 
                 frameborder="0" 
                 style="border:0" 
-                src="https://www.openstreetmap.org/export/embed.html?bbox=${weatherData.coord.lon-0.1}%2C${weatherData.coord.lat-0.1}%2C${weatherData.coord.lon+0.1}%2C${weatherData.coord.lat+0.1}&amp;layer=mapnik&amp;marker=${weatherData.coord.lat}%2C${weatherData.coord.lon}" 
+                src="https://www.openstreetmap.org/export/embed.html?bbox=${weatherData.coord.lon - 0.1}%2C${weatherData.coord.lat - 0.1}%2C${weatherData.coord.lon + 0.1}%2C${weatherData.coord.lat + 0.1}&amp;layer=mapnik&amp;marker=${weatherData.coord.lat}%2C${weatherData.coord.lon}" 
                 allowfullscreen>
               </iframe>
             </div>
@@ -235,16 +235,16 @@ export const WeatherProvider: React.FC<WeatherProviderProps> = ({ children }) =>
           </div>
         </div>
       `;
-      
+
       document.body.appendChild(modal);
-      
+
       const closeButton = modal.querySelector('.close-modal');
       if (closeButton) {
         closeButton.addEventListener('click', () => {
           modal.remove();
         });
       }
-      
+
       modal.addEventListener('click', (e) => {
         if (e.target === modal) {
           modal.remove();
@@ -256,29 +256,29 @@ export const WeatherProvider: React.FC<WeatherProviderProps> = ({ children }) =>
   const openForecastView = () => {
     if (forecastData) {
       const dailyForecasts: { [key: string]: any[] } = {};
-      
+
       forecastData.list.forEach(item => {
         const date = new Date(item.dt * 1000);
         const day = date.toLocaleDateString('en-US', { weekday: 'long' });
-        
+
         if (!dailyForecasts[day]) {
           dailyForecasts[day] = [];
         }
-        
+
         dailyForecasts[day].push(item);
       });
-      
+
       const modal = document.createElement('div');
       modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm';
-      
+
       let forecastHTML = '';
-      
+
       for (const [day, forecasts] of Object.entries(dailyForecasts)) {
         const temps = forecasts.map(f => f.main.temp);
         const minTemp = Math.round(Math.min(...temps));
         const maxTemp = Math.round(Math.max(...temps));
         const icon = forecasts[0].weather[0].icon;
-        
+
         let hourlyHTML = '';
         forecasts.forEach(item => {
           const time = new Date(item.dt * 1000).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
@@ -291,7 +291,7 @@ export const WeatherProvider: React.FC<WeatherProviderProps> = ({ children }) =>
             </div>
           `;
         });
-        
+
         forecastHTML += `
           <div class="bg-tertiary/20 rounded-lg p-4 mb-4">
             <div class="flex justify-between items-center mb-4">
@@ -312,33 +312,47 @@ export const WeatherProvider: React.FC<WeatherProviderProps> = ({ children }) =>
           </div>
         `;
       }
-      
+
       modal.innerHTML = `
         <div class="bg-card-bg rounded-xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
           <div class="flex justify-between items-center p-4 border-b border-tertiary">
             <h2 class="text-xl font-semibold">5-Day Forecast: ${forecastData.city.name}, ${forecastData.city.country}</h2>
-            <button class="close-modal text-2xl text-text-secondary hover:text-white">&times;</button>
+            <button class="close-modal text-3xl text-text-secondary hover:text-white px-4 py-2">&times;</button>
           </div>
           <div class="p-4 overflow-y-auto max-h-[calc(90vh-4rem)]">
             ${forecastHTML}
           </div>
         </div>
       `;
-      
+
       document.body.appendChild(modal);
-      
+      document.body.style.overflow = 'hidden';
+
+      const closeModal = () => {
+        modal.remove();
+        document.body.style.overflow = 'auto';
+      };
+
+      // Single event listener for the close button
       const closeButton = modal.querySelector('.close-modal');
       if (closeButton) {
-        closeButton.addEventListener('click', () => {
-          modal.remove();
+        closeButton.addEventListener('click', (e) => {
+          e.stopPropagation();
+          closeModal();
         });
       }
-      
+
+      // Single event listener for the background
       modal.addEventListener('click', (e) => {
         if (e.target === modal) {
-          modal.remove();
+          closeModal();
         }
       });
+
+      // Cleanup
+      return () => {
+        closeModal();
+      };
     }
   };
 
@@ -352,7 +366,7 @@ export const WeatherProvider: React.FC<WeatherProviderProps> = ({ children }) =>
           feels_like: Math.round(item.main.feels_like),
         };
       });
-      
+
       const humidityData = forecastData.list.slice(0, 8).map(item => {
         const time = new Date(item.dt * 1000).toLocaleTimeString('en-US', { hour: '2-digit' });
         return {
@@ -360,15 +374,15 @@ export const WeatherProvider: React.FC<WeatherProviderProps> = ({ children }) =>
           humidity: item.main.humidity,
         };
       });
-      
+
       const modal = document.createElement('div');
       modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm';
-      
+
       modal.innerHTML = `
         <div class="bg-card-bg rounded-xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
           <div class="flex justify-between items-center p-4 border-b border-tertiary">
             <h2 class="text-xl font-semibold">Weather Analytics: ${weatherData.name}, ${weatherData.sys.country}</h2>
-            <button class="close-modal text-2xl text-text-secondary hover:text-white">&times;</button>
+            <button class="close-modal text-3xl text-text-secondary hover:text-white">&times;</button>
           </div>
           <div class="p-4 overflow-y-auto max-h-[calc(90vh-4rem)]">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -431,22 +445,21 @@ export const WeatherProvider: React.FC<WeatherProviderProps> = ({ children }) =>
               <h3 class="text-lg font-semibold mb-4">24-Hour Trend</h3>
               <div id="chart-container" class="h-64">
                 <p class="text-center text-text-secondary py-10">Weather trend charts would be displayed here.</p>
-                <p class="text-center text-text-secondary">(Using more advanced charting libraries would enable fully interactive charts)</p>
-              </div>
+                 </div>
             </div>
           </div>
         </div>
       `;
-      
+
       document.body.appendChild(modal);
-      
+
       const closeButton = modal.querySelector('.close-modal');
       if (closeButton) {
         closeButton.addEventListener('click', () => {
           modal.remove();
         });
       }
-      
+
       modal.addEventListener('click', (e) => {
         if (e.target === modal) {
           modal.remove();
